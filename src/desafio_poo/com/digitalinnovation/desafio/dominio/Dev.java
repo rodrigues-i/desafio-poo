@@ -2,6 +2,7 @@ package desafio_poo.com.digitalinnovation.desafio.dominio;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class Dev {
@@ -10,12 +11,23 @@ public class Dev {
 	private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 	
 	public void inscreverBootcamp(Bootcamp bootcamp) {
+		conteudosInscritos.addAll(bootcamp.getConteudos());
+		bootcamp.getDevsInscritos().add(this);
 	}
 	
 	public void progredir() {
+		Optional<Conteudo> obj = conteudosInscritos.stream().findFirst();
+		if(obj.isPresent())
+		{
+			conteudosConcluidos.add(obj.get());
+			conteudosInscritos.remove(obj.get());
+		} else {
+			System.err.println("Tu não estás matriculado em um conteúdo");
+		}
 	}
 	
-	public void calcularTotalXp() {
+	public double calcularTotalXp() {
+		return conteudosConcluidos.stream().mapToDouble(conteudo -> conteudo.calcularTotalXp()).sum();
 	}
 
 	public String getName() {
